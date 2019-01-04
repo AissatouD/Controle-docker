@@ -1,0 +1,37 @@
+version: '3.6'
+services:
+  db:
+    build: 
+      context: ./mariadb
+      dockerfile: Dockerfile
+    container_name: Database_mariadb
+    volumes:
+      - './docker/db:/var/lib/mysql'
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_DATABASE=mariadb
+      - MYSQL_USER=Aissatou
+      - MYSQL_PASSWORD=secret
+    links: adminer
+
+  apachephp:
+    build: 
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: Apache_php
+    ports:
+      - "8080:30000"
+    volumes: src:/var/www
+
+    links: 
+      - "db:db"
+
+  adminer:
+    build: 
+      context: ./adminer
+      dockerfile: Dockerfile
+    container_name: Adminer
+    ports:
+      - "8080:50000"
+    links: ['apachephp']
+  
